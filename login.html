@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="shortcut icon" type="x-icon" href="images/Blu.png"
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blu.AI</title>
+  <link rel="stylesheet" href="main.css">
+</head>
+<body>
+  <div class="login-page">
+    <div class="form">
+      <form class="login-form">
+        <input type="text" id="login-email" placeholder="Email Address"/> 
+        <input type="password" id="login-password" placeholder="Password"/>
+        <button type="button" id="login-button">Login</button>
+      </form>
+    </div>
+  </div>
+  
+  <!-- SVG Background -->
+  <svg class="background" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 232 205">
+    <g style="mix-blend-mode:overlay">
+        <path d="M81.2325 121.052C64.7758 121.405 58.1109 100.03 71.584 90.1079L174.126 14.5887C183.458 7.71565 196.461 11.8978 199.883 22.8729L222.591 95.6986C226.013 106.674 217.881 118.113 206.482 118.358L81.2325 121.052Z" fill="#D9D9D9"/>
+    </g>
+    <path d="M72.8502 144.482C56.3909 144.733 49.8488 123.323 63.3785 113.485L166.35 38.6072C175.723 31.7914 188.706 36.0526 192.065 47.0478L214.362 120.016C217.722 131.011 209.521 142.399 198.119 142.573L72.8502 144.482Z" fill="#D9D9D9"/>
+</svg>
+</body>
+
+  <!-- Import Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js"; 
+    import { getDatabase, ref, set, get, update } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+
+    const firebaseConfig = {
+        apiKey: "AIzaSyCyNUw4nNjdwbPK2XDBGF-SrXH74arP3oY",
+        authDomain: "loginbai.firebaseapp.com",
+        projectId: "loginbai",
+        storageBucket: "loginbai.appspot.com",
+        messagingSenderId: "70771945494",
+        appId: "1:70771945494:web:ed98501cfe9b3e7400c537"
+    };
+
+    const firebaseApp = initializeApp(firebaseConfig);
+    const auth = getAuth(firebaseApp);
+
+    const loginWithEmailAndPassword = () => {
+        const email = document.getElementById('login-email').value;
+        const password = document.getElementById('login-password').value;
+
+        signInWithEmailAndPassword(auth, email, password)
+            .then((userCredential) => {
+                // Pag-login matagumpay, i-redirect sa home.html
+                window.location.href = '../home/index.html';
+            })
+            .catch((error) => {
+                console.error("Login failed", error);
+            });
+    };
+
+    // Kung ang button ay na-click, tumawag sa loginWithEmailAndPassword function
+    document.getElementById('login-button').addEventListener('click', loginWithEmailAndPassword);
+  </script>
+</body>
+</html>

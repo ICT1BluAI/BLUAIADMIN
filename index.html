@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="shortcut icon" type="x-icon" href="../images/Blu.png"
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blu.AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>  
+    
+    <section id="menu">
+        <div class="logo">
+            <img src="../images/Blu.png" alt="">
+            <h2>Blu.AI Admin</h2>
+            
+        </div>
+
+        <div class="items">
+            <li><a href="#" id="logout" style="color: #fff;"><i class="fa fa-sign-out"></i> Log-out </a></li>
+        </div>
+    </section>
+    <section id="interface">
+        <div class="navigation">
+            <div class="n1">
+                <div class="search">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="filterInput" placeholder="Search">
+
+                </div>
+            </div>
+        </div>  
+
+        <h3 class="i-name">
+            Dashboard
+        </h3>
+
+        <div class="board">
+            <div class="table-container">
+                <table id="userTable">
+                    <thead>
+                        <tr>
+                            <td>Email</td>
+                            <td>Date Created</td>
+                            <td>Delete Account</td>
+                        </tr>
+                    </thead>
+                    <tbody id="dataContainer">
+                        <!-- Data will be inserted here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+    <!-- Add Firebase products that you want to use -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-auth.js";
+        import { getDatabase, ref, onValue, remove } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-database.js";
+    
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyCyNUw4nNjdwbPK2XDBGF-SrXH74arP3oY",
+            authDomain: "loginbai.firebaseapp.com",
+            databaseURL: "https://loginbai-default-rtdb.firebaseio.com",
+            projectId: "loginbai",
+            storageBucket: "loginbai.appspot.com",
+            messagingSenderId: "70771945494",
+            appId: "1:70771945494:web:ed98501cfe9b3e7400c537"
+        };
+    
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const database = getDatabase(app);
+    
+        // Function to fetch user accounts and display them in a table
+        function fetchUserAccounts() {
+            const userTable = document.getElementById("userTable");
+            const usersRef = ref(database, 'users'); // Assuming your users are stored under a 'users' node
+    
+            // Listen for changes to the users data
+            onValue(usersRef, (snapshot) => {
+                const dataContainer = document.getElementById("dataContainer");
+                dataContainer.innerHTML = ""; // Clear the table body first
+    
+                snapshot.forEach((childSnapshot) => {
+                    const userData = childSnapshot.val();
+                    const email = userData.email;
+                    const creationTime = new Date(userData.creationTime * 1000).toLocaleString();
+                    const newRow = `
+                        <tr>
+                            <td>${email}</td>
+                            <td>${creationTime}</td>
+                            <td><button onclick="deleteAccount('${childSnapshot.key}')">Delete</button></td>
+                        </tr>`;
+                    dataContainer.innerHTML += newRow;
+                });
+            });
+        }
+    
+        // Function to delete user account
+        function deleteAccount(userId) {
+            // Add code to delete the user's account using userId
+            console.log("Deleting account with userId: ", userId);
+        }
+    
+        // Function to filter data based on user input
+        function filterData() {
+            const filterInput = document.getElementById('filterInput');
+            const filterValue = filterInput.value.toUpperCase();
+            const rows = document.querySelectorAll('#dataContainer tr');
+    
+            rows.forEach((row) => {
+                const cells = row.getElementsByTagName('td');
+                let found = false;
+    
+                // Check if any cell contains the filter value
+                for (let i = 0; i < cells.length; i++) {
+                    const cell = cells[i];
+                    if (cell.innerText.toUpperCase().indexOf(filterValue) > -1) {
+                        found = true;
+                        break;
+                    }
+                }
+    
+                // Show or hide the row based on filter result
+                row.style.display = found ? '' : 'none';
+            });
+        }
+    
+        // Event listener for filter input
+        document.getElementById('filterInput').addEventListener('input', filterData);
+    
+        // Call fetchUserAccounts when the page loads
+        window.onload = fetchUserAccounts;
+    </script>
+    <script src="main.js"></script>
+
+</body>
+</html>
